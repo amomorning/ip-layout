@@ -9,7 +9,7 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Viewport,
-    meta: {title: 'Integer Programming'}
+    meta: {title: 'ArchiWeb'}
   },
 
 ]

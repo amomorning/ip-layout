@@ -7,10 +7,17 @@
         @click="drawer = !drawer"
       ></v-app-bar-nav-icon>
     
-      <h2>Integer Programming</h2>
+      <h2>ArchiWeb</h2>
     </v-app-bar>
   
     <v-main class="pt-0">
+      
+      <!--      single        -->
+      <DragCard top="100" left="100"></DragCard>
+  
+      <!--      multiple        -->
+<!--      <DragCard v-for="id in 5" :key="id" :cid="id" ></DragCard>-->
+      
       <Viewer :gui="false" container="container" filename="index.js"></Viewer>
       <Toolbox v-if="!$vuetify.breakpoint.mobile" id="toolbox"></Toolbox>
     </v-main>
@@ -18,8 +25,12 @@
 </template>
 
 <script>
+
+
+import DragCard from "@/views/DragCard";
 export default {
   name: "Viewport",
+  components: {DragCard},
   data: () => ({
     drawer: null,
     authors: ['amomorning'], //在这里输入你的github id(s),
