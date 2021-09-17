@@ -11,14 +11,27 @@
     </v-app-bar>
   
     <v-main class="pt-0">
+      <Drawer></Drawer>
+      <v-btn color="primary"
+             icon fab elevation="5"
+             style="position: absolute; top: 80px; right: 10px; background: white"
+             @click="send"
+      ><v-icon>mdi-send</v-icon></v-btn>
+      <Viewer :gui="false" container="ip-layout-ccdfdc" filename="grid-cube.js"></Viewer>
       
+
+<!--      <v-row>-->
+<!--        <v-col cols="10">-->
+<!--        </v-col>-->
+<!--        <v-col cols="2">-->
+<!--        </v-col>-->
+<!--      </v-row>-->
+<!--      -->
       <!--      single        -->
-      <DragCard top="100" left="100"></DragCard>
   
       <!--      multiple        -->
 <!--      <DragCard v-for="id in 5" :key="id" :cid="id" ></DragCard>-->
       
-      <Viewer :gui="false" container="container" filename="index.js"></Viewer>
       <Toolbox v-if="!$vuetify.breakpoint.mobile" id="toolbox"></Toolbox>
     </v-main>
   </v-app>
@@ -26,11 +39,11 @@
 
 <script>
 
-
-import DragCard from "@/views/DragCard";
+import {store} from "@/store.js"
+import Drawer from "@/views/Drawer";
 export default {
   name: "Viewport",
-  components: {DragCard},
+  components: {Drawer},
   data: () => ({
     drawer: null,
     authors: ['amomorning'], //在这里输入你的github id(s),
@@ -40,6 +53,11 @@ export default {
       content: '<p class="text-h4 ma-4">Content can be <code>html</code> <span class="mdi mdi-flag"></span></p>'
     }]
   }),
+  methods: {
+    send() {
+      store.sendData();
+    }
+  }
 }
 </script>
 
