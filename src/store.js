@@ -1,2 +1,2 @@
 const store = {};
-export {store};
+export  {store};

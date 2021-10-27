@@ -41,6 +41,7 @@
 
 <script>
 import DragCard from "@/views/DragCard";
+
 export default {
   name: "Drawer",
   components: {DragCard},
