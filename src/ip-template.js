@@ -105,6 +105,9 @@ function main() {
     draw();
   }
   
+  store.bindTemplate = () => {
+    window.viewport = viewport;
+  }
 }
 
 export {

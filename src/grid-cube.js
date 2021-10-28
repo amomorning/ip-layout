@@ -2,17 +2,18 @@ import * as ARCH from "@inst-aaa/archiweb-core"
 import * as THREE from "three";
 import {token} from "@/sensitiveInfo"
 import {store} from "@/store.js"
+import {RemoveObjectCommand} from "@inst-aaa/archiweb-core";
+import {MultiCmdsCommand} from "@inst-aaa/archiweb-core/src/commands/Commands";
 
 let viewport = new ARCH.Viewport("ip-layout-ccdfdc", true , {selection: false});
 let archijson = new ARCH.ArchiJSON(token);
 let mt= new ARCH.MaterialFactory();
 
-let box = [];
 let scalar = 60;
 let shift;
 
 function around(val) {
-  return Math.round(val/scalar)*scalar;
+  return Math.round(val/scalar/2)*scalar*2;
 }
 
 function getCorner(b) {
@@ -66,19 +67,38 @@ function generateDomain (box) {
 
 function initArchiJSON() {
   store.sendData = () => {
-    
-    let domain = generateDomain(box);
-    
+    // let box = viewport.layerRef.get('box');
+    viewport.signals.overlayStarted.dispatch();
+    viewport.changeLayer('box');
+    let domain = generateDomain(viewport.objects);
     archijson.sendArchiJSON('ip', [], { domain:domain, templates: store.templates,})
-    
   }
+  
+  store.revert = () => {
+    viewport.changeLayer('default');
+    viewport.signals.sceneChanged.active = false;
+    let cmdArray = [];
+    for(let o of viewport.objects){
+      cmdArray.push(new RemoveObjectCommand(viewport, o))
+    }
+    let cmd = new MultiCmdsCommand(viewport, cmdArray);
+    viewport.execute(cmd);
+  
+    viewport.signals.sceneChanged.active = true;
+    viewport.changeLayer('box');
+    
+    viewport.objects.forEach(b => b.visible = true);
+    viewport.option.autosave = true;
+  }
+  
   archijson.onReceive = function(body) {
+    viewport.option.autosave = false;
+    viewport.changeLayer('box')
+    viewport.objects.forEach(b => b.visible = false);
+    
+  
     
     viewport.signals.sceneChanged.active = false;
-    for(let o of viewport.objects) {
-      viewport.removeObject(o);
-    }
-    
     let len = body.ks.length;
     
     for(let i = 0; i < len; ++ i) {
@@ -90,35 +110,41 @@ function initArchiJSON() {
       let t = store.templates[body.ks[i]];
       for (let j = 0; j < t.length; ++ j) {
         
-        let p = [body.ps[i][0] + t[j][0] + shift[0] + 0.5, body.ps[i][1] + t[j][1] + shift[1] +  0.5, body.ps[i][2] + t[j][2] + shift[2]];
+        let p = [body.ps[i][0] + t[j][0] + shift[0] + 0.5,
+          body.ps[i][1] + t[j][1] + shift[1] +  0.5,
+          body.ps[i][2] + t[j][2] + shift[2]];
         
         cube.add(new ARCH.Cuboid(viewport, p, [1, 1, 1], {material: mt.Glass(c)}));
-        
-        
       }
       cube.scale.set(scalar, scalar, scalar);
       out.add(cube);
     }
-    
-    viewport.changeLayer(viewport.layer);
+  
+    viewport.changeLayer('default');
     viewport.signals.sceneChanged.active = true;
+    viewport.signals.overlayFinished.dispatch();
   }
 }
 
 
 
 function main() {
-  box = [];
-  box.push( new ARCH.Cuboid(viewport, [180, 180, 0], [360, 360, 600]) )
-  box.push( new ARCH.Cuboid(viewport, [240, 240, 480], [240, 240, 240]) )
-  // viewport.objects.push(cube);
+
+  
+  let b1 = new ARCH.Cuboid(viewport, [180, 180, 0], [360, 360, 600]);
+  viewport.removeObjectLayer(b1, 'default');
+  viewport.addObjectLayer(b1, 'box');
+  let b2 = new ARCH.Cuboid(viewport, [240, 240, 480], [240, 240, 240]);
+  viewport.removeObjectLayer(b2, 'default');
+  viewport.addObjectLayer( b2 , 'box');
+  viewport.changeLayer('box');
+  
   viewport.transformer.draggingChanged = function (o, v) {
     if(!v && o.type === 'Cuboid') {
       o.scale.x = around(o.scale.x);
       o.scale.y = around(o.scale.y);
       o.scale.z = around(o.scale.z);
     }
-    generateDomain(box)
   }
   
   viewport.environment.gridUpdate(scalar);
@@ -127,6 +153,9 @@ function main() {
   
   // console.log(colors.length)
   initArchiJSON();
+  store.bindMain = () => {
+    window.viewport = viewport;
+  }
 }
 
 export {main};

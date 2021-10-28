@@ -27,7 +27,7 @@
         <Viewer :gui="false" container="ip-template-ccdfdc" filename="ip-template.js"></Viewer>
         <div style="position: absolute; top: 10px; right: 10px">
     
-            <v-btn @click="dialog=false" icon color="primary" fab style="background: white">
+            <v-btn @click="click" icon color="primary" fab style="background: white">
               <v-icon>
                 mdi-close
               </v-icon>
@@ -41,13 +41,20 @@
 
 <script>
 import DragCard from "@/views/DragCard";
+import {store} from "@/store.js"
 
 export default {
   name: "Drawer",
   components: {DragCard},
   data: () =>({
     dialog: false,
-  })
+  }),
+  methods : {
+    click () {
+      this.dialog = false;
+      store.bindMain();
+    }
+  }
 }
 </script>
 

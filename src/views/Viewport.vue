@@ -17,6 +17,13 @@
              style="position: absolute; top: 80px; right: 10px; background: white"
              @click="send"
       ><v-icon>mdi-send</v-icon></v-btn>
+  
+      <v-btn color="primary"
+             icon fab elevation="5"
+             style="position: absolute; top: 150px; right: 10px; background: white"
+             @click="revert"
+      ><v-icon>mdi-undo</v-icon></v-btn>
+      
       <Viewer :gui="false" container="ip-layout-ccdfdc" filename="grid-cube.js"></Viewer>
       
 
@@ -56,6 +63,9 @@ export default {
   methods: {
     send() {
       store.sendData();
+    },
+    revert() {
+      store.revert();
     }
   }
 }
