@@ -145,8 +145,8 @@ function main() {
     }
   }
   
-  viewport.environment.gridUpdate(scalar);
-  viewport.transformer.setTransformSnap(scalar);
+  viewport.option.grid = scalar;
+  viewport.option.snap = true;
   
   
   // console.log(colors.length)
