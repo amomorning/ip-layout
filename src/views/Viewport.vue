@@ -11,7 +11,6 @@
     </v-app-bar>
   
     <v-main class="pt-0">
-      <Drawer></Drawer>
       <v-btn color="primary"
              icon fab elevation="5"
              style="position: absolute; top: 80px; right: 10px; background: white"
@@ -25,7 +24,8 @@
       ><v-icon>mdi-undo</v-icon></v-btn>
       
       <Viewer :gui="false" container="ip-layout-ccdfdc" filename="grid-cube.js"></Viewer>
-      
+  
+      <Drawer></Drawer>
 
 <!--      <v-row>-->
 <!--        <v-col cols="10">-->
@@ -53,11 +53,11 @@ export default {
   components: {Drawer},
   data: () => ({
     drawer: null,
-    authors: ['amomorning'], //在这里输入你的github id(s),
+    authors: ['amomorning', 'whitegreen'],
     items:[{
       icon: 'mdi-blur',
-      title: 'Item Example',
-      content: '<p class="text-h4 ma-4">Content can be <code>html</code> <span class="mdi mdi-flag"></span></p>'
+      title: 'IP Layout',
+      content: 'This is a small application that can transfer the configured <b>templates</b> and <b>box domains</b> to the backend and generate the packing grid layout.  <br><br> The backend is Hua Hao\'s <a target="_blank" href="https://github.com/whitegreen/PackingDone">pack-grid</a> with 0-1 integer linear programming via <a target="_blank" href="https://www.gurobi.com/">Gurobi</a> Python.'
     }]
   }),
   methods: {

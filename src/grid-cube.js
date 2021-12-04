@@ -5,6 +5,7 @@ import {store} from "@/store.js"
 import {RemoveObjectCommand} from "@inst-aaa/archiweb-core";
 import {MultiCmdsCommand} from "@inst-aaa/archiweb-core/src/commands/Commands";
 
+
 let viewport = new ARCH.Viewport("ip-layout-ccdfdc", true , {selection: false});
 let archijson = new ARCH.ArchiJSON(token);
 let mt= new ARCH.MaterialFactory();
@@ -35,7 +36,7 @@ function getShiftVector(box) {
 function generateDomain (box) {
   
   shift = getShiftVector(box).toArray();
-  console.log("shift", shift);
+  // console.log("shift", shift);
   
   let st = new Set();
   box.forEach(b => {
@@ -64,11 +65,13 @@ function generateDomain (box) {
 
 function initArchiJSON() {
   store.sendData = () => {
-    // let box = viewport.layerRef.get('box');
-    viewport.signals.overlayStarted.dispatch();
+    viewport.signals.overlayStarted.dispatch("loading...")
+    // viewport.signals.overlayStarted.dispatch();
+    
     viewport.changeLayer('box');
     let domain = generateDomain(viewport.objects);
     archijson.sendArchiJSON('ip', [], { domain:domain, templates: store.templates,})
+    
   }
   
   store.revert = () => {
@@ -92,8 +95,6 @@ function initArchiJSON() {
     viewport.option.autosave = false;
     viewport.changeLayer('box')
     viewport.objects.forEach(b => b.visible = false);
-    
-  
     
     viewport.signals.sceneChanged.active = false;
     let len = body.ks.length;
@@ -123,18 +124,29 @@ function initArchiJSON() {
   }
 }
 
+function initScene() {
+  let b1 = new ARCH.Cuboid(viewport, [180, 180, 0], [360, 360, 600]);
+  viewport.removeObjectLayer(b1, 'default');
+  viewport.addObjectLayer(b1, 'box');
+  let b2 = new ARCH.Cuboid(viewport, [300, 300, 480], [240, 240, 240]);
+  viewport.removeObjectLayer(b2, 'default');
+  viewport.addObjectLayer( b2 , 'box');
+  viewport.changeLayer('box');
+  let b3 = new ARCH.Cuboid(viewport, [420, 420, 0], [240, 600, 240]);
+  viewport.removeObjectLayer(b3, 'default');
+  viewport.addObjectLayer( b3 , 'box');
+  viewport.changeLayer('box');
+  let b4 = new ARCH.Cuboid(viewport, [-180, 300, 0], [600, 240, 240]);
+  viewport.removeObjectLayer(b4, 'default');
+  viewport.addObjectLayer( b4 , 'box');
+  viewport.changeLayer('box');
+}
+
 
 
 function main() {
 
   
-  let b1 = new ARCH.Cuboid(viewport, [180, 180, 0], [360, 360, 600]);
-  viewport.removeObjectLayer(b1, 'default');
-  viewport.addObjectLayer(b1, 'box');
-  let b2 = new ARCH.Cuboid(viewport, [240, 240, 480], [240, 240, 240]);
-  viewport.removeObjectLayer(b2, 'default');
-  viewport.addObjectLayer( b2 , 'box');
-  viewport.changeLayer('box');
   
   viewport.transformer.draggingChanged = function (o, v) {
     if(!v && o.type === 'Cuboid') {
@@ -150,10 +162,12 @@ function main() {
   
   
   // console.log(colors.length)
+  initScene();
   initArchiJSON();
   store.bindMain = () => {
     window.viewport = viewport;
   }
+  
 }
 
 export {main};
