@@ -60,9 +60,6 @@ function generateDomain (box) {
     str.split(",").map(Number)
   );
   
-  
-
-  
 }
 
 function initArchiJSON() {
@@ -141,6 +138,7 @@ function main() {
   
   viewport.transformer.draggingChanged = function (o, v) {
     if(!v && o.type === 'Cuboid') {
+      
       o.scale.x = around(o.scale.x);
       o.scale.y = around(o.scale.y);
       o.scale.z = around(o.scale.z);
