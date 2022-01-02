@@ -4,3 +4,12 @@ This is a small application that transfer the configured <b>templates</b> and <b
 
 
 ![](./imgs/drawer-viewer.gif)
+
+## Usage
+
+
+```bash
+cd backend
+conda activate archiweb
+python test.py
+```

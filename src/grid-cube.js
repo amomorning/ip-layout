@@ -65,6 +65,7 @@ function generateDomain (box) {
 
 function initArchiJSON() {
   store.sendData = () => {
+    console.log('overlay')
     viewport.signals.overlayStarted.dispatch("loading...")
     // viewport.signals.overlayStarted.dispatch();
     
@@ -142,10 +143,13 @@ function initScene() {
   viewport.changeLayer('box');
 }
 
+function onWindowResize() {
+  viewport.signals.windowResize.dispatch();
+}
 
 
 function main() {
-
+  
   
   
   viewport.transformer.draggingChanged = function (o, v) {
@@ -166,6 +170,12 @@ function main() {
   initArchiJSON();
   store.bindMain = () => {
     window.viewport = viewport;
+  
+    if(window.resizeFunc) {
+      window.removeEventListener('resize', window.resizeFunc);
+    }
+    window.resizeFunc = onWindowResize;
+    window.addEventListener('resize', onWindowResize);
   }
   
 }

@@ -26,7 +26,7 @@
       <Viewer :gui="false" container="ip-layout-ccdfdc" filename="grid-cube.js"></Viewer>
   
       <Drawer></Drawer>
-
+      <Overlay></Overlay>
 <!--      <v-row>-->
 <!--        <v-col cols="10">-->
 <!--        </v-col>-->
